@@ -1,9 +1,8 @@
 from django.db import models
 
 
-# Create your models here.
 class Team(models.Model):
-    name = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=30)
     titles = models.IntegerField(default=0, null=True, blank=True)
     top_scorer = models.CharField(max_length=50)
     fifa_code = models.CharField(max_length=3, unique=True)

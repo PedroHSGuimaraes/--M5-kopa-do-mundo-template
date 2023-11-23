@@ -1,19 +1,25 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+from rest_framework.views import Response, status
 from exceptions import *
 
 
-def data_processing(data: dict) -> str:
+def data_processing(**data: dict):
+    first_word_cup = datetime(1930, 1, 1)
+    last_word_cup = datetime(2022, 1, 1)
+
+    data_first_cup = datetime.strptime(data["first_cup"], "%Y-%m-%d")
+
+    delta_year_cup = data_first_cup.year - first_word_cup.year
+    delta_all_data_cup = (last_word_cup.year - data_first_cup.year) / 4
+
     if data["titles"] < 0:
-        raise NegativeTitlesError
+        data_error = {"error": "titles cannot be negative"}
+        return data_error
 
-    first_cup_year = int(data["first_cup"][:4])
-    if first_cup_year < 1930 or (first_cup_year - 1930) % 4 != 0:
-        raise InvalidYearCupError
+    if data_first_cup.year < first_word_cup.year or delta_year_cup % 4 != 0:
+        data_error = {"error": "there was no world cup this year"}
+        return data_error
 
-    current_year = datetime.now().year
-    max_possible_titles = (current_year - first_cup_year) // 4 + 1
-
-    if data["titles"] > max_possible_titles:
-        raise ImpossibleTitlesError
-
-    return f"{data['name']} - Data Processed Successfully!"
+    if data["titles"] > delta_all_data_cup:
+        data_error = {"error": "impossible to have more titles than disputed cups"}
+        return data_error
