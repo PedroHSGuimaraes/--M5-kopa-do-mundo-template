@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from exceptions import *
 
 
-def data_processing(data):
+def data_processing(data: dict) -> str:
     if data["titles"] < 0:
         raise NegativeTitlesError
 
